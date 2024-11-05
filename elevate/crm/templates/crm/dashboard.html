@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Wellness Tracker</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#">Wellness Tracker</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'user-logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h4>Track Sleep</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Log your sleep hours to maintain a healthy routine.</p>
+                        <a href="{% url 'track_sleep' %}" class="btn btn-info">Track Sleep</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h4>Track Hydration</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Log your water intake to stay hydrated throughout the day.</p>
+                        <a href="{% url 'track_hydration' %}" class="btn btn-success">Track Hydration</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-warning text-white">
+                        <h4>Track Steps</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Track your steps to stay active and healthy.</p>
+                        <a href="{% url 'track_steps' %}" class="btn btn-warning">Track Steps</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center mt-5">
+        <p>&copy; 2024 Wellness Tracker. All rights reserved.</p>
+    </footer>
+</body>
+</html>

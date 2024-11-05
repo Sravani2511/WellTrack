@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellness Tracker - Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="jumbotron text-center">
+            <h1 class="display-4">Welcome to the Wellness Tracker</h1>
+            <p class="lead">Track your daily activities such as sleep, steps, hydration, and more!</p>
+            <hr class="my-4">
+            <p>Stay healthy and keep your wellness goals in check!</p>
+            <a class="btn btn-primary btn-lg" href="{% url 'my-login' %}" role="button">Login</a>
+            <a class="btn btn-success btn-lg" href="{% url 'register' %}" role="button">Register</a>
+        </div>
+    </div>
+</body>
+</html>
