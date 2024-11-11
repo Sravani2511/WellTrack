@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - WellTrack</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+        .container {
+            width: 300px;
+            padding: 2rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            margin: 8px 0;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        input[type="submit"] {
+            margin-top: 10px;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 4px;
+            background-color: #80ced6;
+            color: white;
+            cursor: pointer;
+        }
+        a {
+            color: #007bff;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Register now!</h1>
+        <form method="POST" autocomplete="off">
+            {% csrf_token %}
+            {{ registerform.as_p }}
+            <input type="submit" value="Register"/>
+        </form>
+        <p><a href="{% url 'my-login' %}">Already have an account? Login here.</a></p>
+    </div>
+</body>
+</html>
