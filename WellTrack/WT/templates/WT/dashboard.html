@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - WellTrack</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #80ced6;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        h1 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+        button {
+            display: block;
+            margin: 12px auto;
+            padding: 0.5rem;
+            font-size: 1rem;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            width: 80%;
+            cursor: pointer;
+        }
+        .logout {
+            background-color: #dc3545;
+        }
+        .chatbot-btn {
+            background-color: #28a745; /* Chatbot button color */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to your Dashboard</h1>
+
+        <!-- Hydration Tracker as a button -->
+        <form action="{% url 'hydration-tracker' %}" method="GET">
+            <button type="submit">Hydration Tracker</button>
+        </form>
+
+        <!-- Sleep Tracker as a button -->
+        <form action="{% url 'sleep-tracker' %}" method="GET">
+            <button type="submit">Sleep Tracker</button>
+        </form>
+
+        <!-- Chatbot button -->
+        <button class="chatbot-btn" onclick="window.location.href='{% url 'chatbot' %}'">Ask Your Questions</button>
+
+        <!-- Logout Form -->
+        <form action="{% url 'user-logout' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="logout">Logout</button>
+        </form>
+    </div>
+</body>
+</html>
