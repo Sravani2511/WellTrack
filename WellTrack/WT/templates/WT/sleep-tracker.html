@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #034f84;
+            background-size: cover;
+            color: #ffffff;
+        }
+        h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .tracker {
+            margin-top: 20px;
+            max-width: 400px;
+            margin: auto;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .progress {
+            width: 100%;
+            background: #444;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            height: 30px;
+            background: linear-gradient(to right, #4a90e2, #357abd);
+            width: 0%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin-top: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #357abd;
+        }
+        .input-field {
+            padding: 10px;
+            width: 100%;
+            max-width: 200px;
+            font-size: 16px;
+            text-align: center;
+            margin: 10px auto;
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #goal-setter {
+            display: none;
+        }
+        .chart-container {
+            width: 80%;
+            margin: 30px auto;
+        }
+    </style>
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2>Sleep Tracker</h2>
+
+    <!-- Input for sleep goal -->
+    <div>
+        <input type="number" id="sleep-goal" class="input-field" placeholder="Enter your sleep goal (hrs)">
+        <button class="btn" onclick="setSleepGoal()">Set Goal</button>
+    </div>
+
+    <!-- Tracker and Progress bar -->
+    <div id="goal-setter" class="tracker">
+        <div class="progress">
+            <div class="progress-bar" id="sleep-progress-bar"></div>
+        </div>
+        <p id="sleep-progress-text">0 / 0 hrs</p>
+        <button class="btn" onclick="addSleep()">Log 1 Hour of Sleep</button>
+    </div>
+
+    <!-- Date picker and log sleep -->
+    <div>
+        <h3>Log Sleep for Specific Date</h3>
+        <input type="date" id="sleep-date" class="input-field">
+        <button class="btn" onclick="logSleepByDate()">Log Sleep for Selected Date</button>
+    </div>
+
+    <!-- Average Sleep -->
+    <div>
+        <h3>Average Sleep</h3>
+        <p id="average-sleep-text">N/A</p>
+    </div>
+
+    <!-- Sleep Chart -->
+    <div class="chart-container">
+        <h3>Sleep Hours Chart</h3>
+        <canvas id="sleepChart" width="400" height="200"></canvas>
+    </div>
+
+    <script>
+        let sleepHistory = [];
+        let totalSleep = 0;
+        let sleepGoal = 0;
+
+        // Create the chart
+        let ctx = document.getElementById('sleepChart').getContext('2d');
+        let sleepChart = new Chart(ctx, {
+            type: 'line', // Line chart
+            data: {
+                labels: [], // Dates for the x-axis
+                datasets: [{
+                    label: 'Hours of Sleep',
+                    data: [], // Sleep data
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#ffffff' // White color for x-axis ticks
+                        },
+                        grid: {
+                            color: '#d3d3d3' // Light grey color for x-axis grid lines
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 24,
+                        ticks: {
+                            color: '#ffffff' // White color for y-axis ticks
+                        },
+                        grid: {
+                            color: '#d3d3d3' // Light grey color for y-axis grid lines
+                        }
+                    }
+                },
+                responsive: true
+            }
+        });
+
+        // Set the sleep goal
+        function setSleepGoal() {
+            sleepGoal = parseInt(document.getElementById('sleep-goal').value);
+            if (isNaN(sleepGoal) || sleepGoal <= 0) {
+                alert("Please enter a valid sleep goal in hours.");
+                return;
+            }
+            document.getElementById('goal-setter').style.display = 'block';
+            document.getElementById('sleep-progress-text').innerText = `0 / ${sleepGoal} hrs`;
+        }
+
+        // Add 1 hour of sleep and update progress
+        function addSleep() {
+            totalSleep += 1;
+            if (totalSleep > sleepGoal) totalSleep = sleepGoal;
+
+            // Add to sleep history
+            let today = new Date();
+            let historyEntry = {
+                date: today.toLocaleDateString(),
+                hours: totalSleep
+            };
+            sleepHistory.push(historyEntry);
+
+            updateChart(); // Update chart with the new data
+
+            // Update progress bar
+            const progressBar = document.getElementById('sleep-progress-bar');
+            const progressText = document.getElementById('sleep-progress-text');
+            const percentage = (totalSleep / sleepGoal) * 100;
+            progressBar.style.width = percentage + '%';
+            progressText.innerText = `${totalSleep} / ${sleepGoal} hrs`;
+
+            updateAverageSleep(); // Update average sleep
+        }
+
+        // Log sleep for a specific date
+        function logSleepByDate() {
+            const selectedDate = document.getElementById('sleep-date').value;
+            if (!selectedDate) {
+                alert("Please select a date.");
+                return;
+            }
+
+            let sleepHours = parseInt(prompt("Enter hours of sleep for " + selectedDate));
+            if (isNaN(sleepHours) || sleepHours <= 0) {
+                alert("Please enter valid hours.");
+                return;
+            }
+
+            // Add to sleep history
+            let historyEntry = {
+                date: selectedDate,
+                hours: sleepHours
+            };
+            sleepHistory.push(historyEntry);
+
+            updateChart(); // Update chart with the new data
+            updateAverageSleep(); // Update average sleep
+        }
+
+        // Update the chart with new sleep history
+        function updateChart() {
+            let dates = sleepHistory.map(entry => entry.date);
+            let hours = sleepHistory.map(entry => entry.hours);
+            sleepChart.data.labels = dates;
+            sleepChart.data.datasets[0].data = hours;
+            sleepChart.update(); // Re-render chart
+        }
+
+        // Calculate and display average sleep
+        function updateAverageSleep() {
+            let totalHours = sleepHistory.reduce((sum, entry) => sum + entry.hours, 0);
+            let averageSleep = totalHours / sleepHistory.length;
+            document.getElementById('average-sleep-text').innerText = averageSleep.toFixed(2) + " hours";
+        }
+    </script>
+</body>
+</html>
