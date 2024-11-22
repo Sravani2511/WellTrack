@@ -6,99 +6,250 @@
     <title>Hydration Tracker</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom right, #a1c4fd, #c2e9fb);
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
             text-align: center;
             padding: 20px;
-            background-color: #92a8d1;
-            background-size: cover;
-            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        h2 {
-            font-size: 36px; /* Increased font size */
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .tracker-container, .chart-container {
+            background: linear-gradient(to bottom right, #ffffff, #f7f7f7);
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            flex: 1 1 calc(50% - 40px); /* Two items per row on larger screens */
+            min-width: 300px;
+        }
+
+        h2, h3 {
+            color: #4a4a4a;
             margin-bottom: 20px;
         }
-        .tracker-container {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 400px;
-            margin: 20px auto;
-            text-align: center;
-        }
-        .progress {
+
+        .input-field {
             width: 100%;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 15px 0;
+            max-width: 300px;
+            margin: 15px auto;
+            padding: 10px;
+            border-radius: 25px;
+            border: none;
+            font-size: 1rem;
+            outline: none;
+            background: linear-gradient(to right, #e3e8ff, #ffffff);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .progress-bar {
+
+        .btn {
+            margin-top: 15px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            color: white;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            background: linear-gradient(to right, #2575fc, #6a11cb);
+            transform: translateY(-2px);
+        }
+
+        .progress-bar-container {
+            margin: 20px 0;
+            width: 100%;
+            max-width: 300px;
             height: 30px;
-            background: linear-gradient(to bottom, #00bfff, #1e90ff);
+            background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
             width: 0%;
-            border-radius: 10px;
+            height: 100%;
+            background: linear-gradient(to right, #11998e, #38ef7d);
             transition: width 0.3s ease;
         }
-        .btn, .input-field {
+
+        .text-info {
+            font-size: 1.1rem;
             margin: 10px 0;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
+            color: #4a4a4a;
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
         }
-        .btn {
-            cursor: pointer;
-            background-color: #1e90ff;
-            color: white;
-        }
-        .btn:hover {
-            background-color: #00bfff;
-        }
-        .input-field {
-            width: 80%; /* Adjusted width */
-            font-size: 16px;
+
+        footer {
             text-align: center;
-            border: 1px solid #ccc;
-            margin-bottom: 15px; /* Added spacing below text box */
+            padding: 20px;
+            background: #2575fc;
+            color: white;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        @media screen and (max-width: 768px) {
+            .tracker-container, .chart-container {
+                flex: 1 1 100%; /* Stack items on smaller screens */
+            }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h2>Hydration Tracker</h2>
-    <div class="tracker-container">
-        <input type="number" id="hydration-goal" class="input-field" placeholder="Enter daily goal (ml)">
-        <button class="btn" onclick="setGoal()">Set Goal</button>
-        <div id="goal-setter" style="display: none;">
-            <div class="progress">
-                <div class="progress-bar" id="progress-bar"></div>
+    <header>
+        <h1>Hydration Tracker</h1>
+    </header>
+
+    <div class="container">
+        <!-- Tracker Section -->
+        <div class="tracker-container">
+            <h2>Track Your Daily Hydration</h2>
+            <input type="number" id="hydration-goal" class="input-field" placeholder="Set Daily Hydration Goal (ml)">
+            <button class="btn" onclick="setHydrationGoal()">Set Goal</button>
+
+            <div id="progress-section" style="display: none;">
+                <div class="progress-bar-container">
+                    <div id="progress-bar" class="progress-bar"></div>
+                </div>
+                <p id="progress-text" class="text-info">0 / 0 ml</p>
+                <button class="btn" onclick="addWater(250)">Add 250 ml</button>
             </div>
-            <p id="progress-text">0 / 0 ml</p>
-            <button class="btn" onclick="addWater()">Drink 250 ml</button>
+
+            <h3>Log Water Intake by Date</h3>
+            <input type="date" id="log-date" class="input-field">
+            <button class="btn" onclick="logWaterIntake()">Log Water</button>
+
+            <h3>Average Hydration</h3>
+            <p id="average-text" class="text-info">N/A</p>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="chart-container">
+            <h2>Your Hydration Over Time</h2>
+            <canvas id="hydrationChart"></canvas>
         </div>
     </div>
 
-    <script>
-        let totalWater = 0;
-        let hydrationGoal = 0;
+    <footer>
+        Hydration Tracker © 2024 | Stay Healthy, Stay Hydrated
+    </footer>
 
-        function setGoal() {
+    <script>
+        let hydrationGoal = 0;
+        let totalWater = 0;
+        let hydrationHistory = [];
+
+        // Initialize Chart
+        const ctx = document.getElementById('hydrationChart').getContext('2d');
+        const hydrationChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Water Intake (ml)',
+                    data: [],
+                    backgroundColor: 'rgba(54, 215, 183, 0.2)',
+                    borderColor: '#38ef7d',
+                    borderWidth: 2,
+                }],
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        ticks: { color: '#4a4a4a' },
+                        grid: { color: '#eeeeee' },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#4a4a4a' },
+                        grid: { color: '#eeeeee' },
+                    },
+                },
+            },
+        });
+
+        // Set Hydration Goal
+        function setHydrationGoal() {
             hydrationGoal = parseInt(document.getElementById('hydration-goal').value);
             if (isNaN(hydrationGoal) || hydrationGoal <= 0) {
-                alert("Please enter a valid daily goal in ml.");
+                alert('Please enter a valid hydration goal.');
                 return;
             }
-            document.getElementById('goal-setter').style.display = 'block';
+            document.getElementById('progress-section').style.display = 'block';
             document.getElementById('progress-text').innerText = `0 / ${hydrationGoal} ml`;
         }
 
-        function addWater() {
-            totalWater += 250;
+        // Add Water
+        function addWater(amount) {
+            totalWater += amount;
             if (totalWater > hydrationGoal) totalWater = hydrationGoal;
+
             const progressBar = document.getElementById('progress-bar');
             const progressText = document.getElementById('progress-text');
             const percentage = (totalWater / hydrationGoal) * 100;
-            progressBar.style.width = percentage + '%';
+            progressBar.style.width = `${percentage}%`;
             progressText.innerText = `${totalWater} / ${hydrationGoal} ml`;
+        }
+
+        // Log Water Intake by Date
+        function logWaterIntake() {
+            const date = document.getElementById('log-date').value;
+            if (!date) {
+                alert('Please select a date.');
+                return;
+            }
+
+            const amount = parseInt(prompt('Enter water intake (ml):'));
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount.');
+                return;
+            }
+
+            hydrationHistory.push({ date, amount });
+            updateChart();
+            updateAverage();
+        }
+
+        // Update Chart
+        function updateChart() {
+            hydrationChart.data.labels = hydrationHistory.map(entry => entry.date);
+            hydrationChart.data.datasets[0].data = hydrationHistory.map(entry => entry.amount);
+            hydrationChart.update();
+        }
+
+        // Update Average Hydration
+        function updateAverage() {
+            const total = hydrationHistory.reduce((sum, entry) => sum + entry.amount, 0);
+            const average = total / hydrationHistory.length;
+            document.getElementById('average-text').innerText = `${average.toFixed(2)} ml`;
         }
     </script>
 </body>
