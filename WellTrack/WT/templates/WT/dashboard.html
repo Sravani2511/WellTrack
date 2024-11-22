@@ -48,6 +48,10 @@
         .chatbot-btn {
             background-color: #28a745; /* Chatbot button color */
         }
+        .register-btn {
+            background-color: #ffc107; /* Register button color */
+            color: black;
+        }
     </style>
 </head>
 <body>
@@ -67,11 +71,16 @@
         <!-- Chatbot button -->
         <button class="chatbot-btn" onclick="window.location.href='{% url 'chatbot' %}'">Ask Your Questions</button>
 
+        <!-- Register Button -->
+        <form action="{% url 'user-register' %}" method="GET">
+            <button type="submit" class="register-btn">Register</button>
+        </form>
+
         <!-- Logout Form -->
         <form action="{% url 'user-logout' %}" method="POST">
-            {% csrf_token %}
             <button type="submit" class="logout">Logout</button>
         </form>
     </div>
 </body>
 </html>
+

@@ -57,13 +57,20 @@
 </head>
 <body>
     <div class="container">
-        <h1>Register now!</h1>
-        <form method="POST" autocomplete="off">
-            {% csrf_token %}
-            {{ registerform.as_p }}
-            <input type="submit" value="Register"/>
+        <h1>Register</h1>
+
+        <!-- Form block -->
+        <form method="POST" action="{% url 'user-register' %}" autocomplete="off">
+            <input type="text" name="username" placeholder="Username" required />
+            <input type="email" name="email" placeholder="Email" required />
+            <input type="password" name="password" placeholder="Password" required />
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required />
+            <input type="submit" value="Register" />
         </form>
+
+        <!-- Link to Login -->
         <p><a href="{% url 'my-login' %}">Already have an account? Login here.</a></p>
     </div>
 </body>
 </html>
+
