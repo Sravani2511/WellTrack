@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Tracker</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(120deg, #f8b500, #ff6f61);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        h2, h3 {
+            margin-top: 20px;
+            color: #fff;
+        }
+
+        form {
+            margin: 20px 0;
+        }
+
+        input[type="text"], input[type="number"], input[type="date"] {
+            padding: 10px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            width: 250px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #ff6f61;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #f8b500;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            background: rgba(255, 255, 255, 0.2);
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        /* Container */
+        .container {
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calorie Tracker</h1>
+
+        <!-- Form to Log Calories -->
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="food_item" placeholder="Food Item" required>
+            <input type="number" name="calories" placeholder="Calories (kcal)" required>
+            <input type="date" name="date_logged" required>
+            <button type="submit">Log Calories</button>
+        </form>
+
+        <h2>Total Calories: {{ total_calories }} kcal</h2>
+
+        <!-- Form to Select a Date -->
+        <h3>View Calorie Intake by Date</h3>
+        <form method="GET">
+            <input type="date" name="filter_date" value="{{ selected_date }}">
+            <button type="submit">Filter</button>
+        </form>
+
+        <!-- Filtered Logs -->
+        {% if filtered_logs %}
+            <h3>Calorie Logs for {{ selected_date }}</h3>
+            <ul>
+                {% for log in filtered_logs %}
+                <li>{{ log.food_item }} - {{ log.calories }} kcal</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <h3>No logs found for the selected date.</h3>
+        {% endif %}
+
+        <!-- All Logs -->
+        <h3>Your Calorie Logs</h3>
+        <ul>
+            {% for log in calorie_logs %}
+            <li>{{ log.date_logged }}: {{ log.food_item }} - {{ log.calories }} kcal</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

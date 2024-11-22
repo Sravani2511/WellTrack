@@ -64,6 +64,11 @@
             <button type="submit">Sleep Tracker</button>
         </form>
 
+        <!-- Calorie Tracker as a button -->
+        <form action="{% url 'calorie-tracker' %}" method="GET">
+            <button type="submit">Calorie Tracker</button>
+        </form>
+
         <!-- Chatbot button -->
         <button class="chatbot-btn" onclick="window.location.href='{% url 'chatbot' %}'">Ask Your Questions</button>
 
