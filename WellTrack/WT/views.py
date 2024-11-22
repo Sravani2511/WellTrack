@@ -8,6 +8,10 @@ from .forms import CreateUserForm, LoginForm
 from .models import CalorieLog  # Import the CalorieLog model
 import json
 from transformers import pipeline
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Appointment
+from WT.models import Appointment
+
 
 # Set up the pipeline for text generation (using DistilGPT-2)
 pipe = pipeline("text-generation", model="distilgpt2")
@@ -88,3 +92,47 @@ def sleep_tracker(request):
 @login_required(login_url="my-login")
 def calorie_tracker(request):
     return render(request, 'WT/calorie-tracker.html')
+
+# Appointment Manager view
+@login_required(login_url="my-login")
+def appointment_manager(request):
+    # Implement your logic for the appointment manager here
+    # For now, render a placeholder HTML page
+    return render(request, 'WT/appointment-manager.html')
+
+def add_appointment(request):
+    if request.method == 'POST':
+        # Extract data from form submission
+        name = request.POST.get('name')
+        appointment_date = request.POST.get('appointment_date')
+        description = request.POST.get('description')
+        
+        # Save the appointment (you should handle form validation here)
+        Appointment.objects.create(
+            name=name,
+            appointment_date=appointment_date,
+            description=description
+        )
+        
+        # Redirect or render a success message
+        return redirect('appointment-success')  # Adjust redirect as necessary
+    
+    return render(request, 'add-appointment.html')
+
+def add_reminder(request):
+    return render(request, 'WT/add_reminder.html')
+
+
+def book_appointment(request, appointment_id):
+    # Retrieve the appointment by ID
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    
+    if request.method == 'POST':
+        # Confirm the appointment (e.g., update a 'status' field in your model)
+        appointment.status = 'Confirmed'  # Assuming you have a 'status' field
+        appointment.save()
+        
+        return redirect('appointment-confirmed')  # Redirect to a confirmation page
+    
+    return render(request, 'book_appointment.html', {'appointment': appointment})
+
