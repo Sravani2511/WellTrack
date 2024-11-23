@@ -1,11 +1,36 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+# Model for tracking calories
 class CalorieLog(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    food_item = models.CharField(max_length=100)
-    calories = models.PositiveIntegerField()
-    date_logged = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='calorie_logs'
+    )  # Link to the user who owns this log
+    date = models.DateField()  # Date of the calorie log
+    food_item = models.CharField(max_length=100, blank=True, null=True)  # Optional food item description
+    calories = models.PositiveIntegerField()  # Number of calories consumed
+    date_logged = models.DateTimeField(auto_now_add=True)  # Automatically log the creation timestamp
 
     def __str__(self):
-        return f"{self.food_item} - {self.calories} kcal"
+        return f"{self.user.username} - {self.date} - {self.calories} kcal"
+
+
+# Model for appointments
+class Appointment(models.Model):
+    name = models.CharField(max_length=255)  # Name of the person or event
+    appointment_date = models.DateTimeField()  # Date and time of the appointment
+    description = models.TextField(blank=True, null=True)  # Optional description
+    status = models.CharField(
+        max_length=50,
+        choices=[
+            ("Pending", "Pending"), 
+            ("Confirmed", "Confirmed"), 
+            ("Cancelled", "Cancelled")
+        ],
+        default="Pending"  # Default status for appointments
+    )  # Status of the appointment
+
+    def __str__(self):
+        return f"{self.name} on {self.appointment_date.strftime('%Y-%m-%d %H:%M:%S')}"
