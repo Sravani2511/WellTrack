@@ -135,4 +135,57 @@ def book_appointment(request, appointment_id):
         return redirect('appointment-confirmed')  # Redirect to a confirmation page
     
     return render(request, 'book_appointment.html', {'appointment': appointment})
+def confirm_appointment(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        appointment_date = request.POST.get("appointment_date")
+        description = request.POST.get("description")
 
+        # Save the appointment to the database
+        Appointment.objects.create(
+            name=name,
+            appointment_date=appointment_date,
+            description=description
+        )
+        return redirect("appointments-list")  # Redirect to the appointments list
+
+    return render(request, "book_appointment.html")
+
+def modify_appointment(request, appointment_id=None):
+    # Check if there are any appointments in the database
+    if not Appointment.objects.exists():
+        messages.warning(request, "No appointments available to modify.")
+        return redirect("appointments-list")  # Redirect to the appointments list
+
+    # Get the specific appointment for modification
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+
+    if request.method == "POST":
+        # Update the appointment details if POST request
+        appointment.name = request.POST.get("name")
+        appointment.appointment_date = request.POST.get("appointment_date")
+        appointment.description = request.POST.get("description")
+        appointment.save()
+        messages.success(request, "Appointment updated successfully!")
+        return redirect("appointments-list")  # Redirect to the appointments list
+
+    return render(request, "modify_appointment.html", {"appointment": appointment})
+
+def delete_appointment(request):
+    if request.method == "POST":
+        name = request.POST.get("name").strip()
+        
+        # Check if an appointment with the given name exists
+        appointment = Appointment.objects.filter(name=name).first()
+
+        if not appointment:
+            # No matching appointment found
+            messages.error(request, "No appointment found with the given name.")
+            return render(request, "delete_appointment.html")
+
+        # Delete the matching appointment
+        appointment.delete()
+        messages.success(request, f"Appointment '{name}' has been successfully deleted.")
+        return redirect("appointments-list")
+
+    return render(request, "delete_appointment.html")

@@ -18,10 +18,11 @@ class CalorieLog(models.Model):
 
 
 # Model for appointments
+
 class Appointment(models.Model):
-    name = models.CharField(max_length=255)  # Name of the person or event
-    appointment_date = models.DateTimeField()  # Date and time of the appointment
-    description = models.TextField(blank=True, null=True)  # Optional description
+    name = models.CharField(max_length=100)
+    appointment_date = models.DateField()
+    description = models.TextField(blank=True, null=True)
     status = models.CharField(
         max_length=50,
         choices=[
