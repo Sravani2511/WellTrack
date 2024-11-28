@@ -9,5 +9,5 @@ urlpatterns = [
     path('user-logout', views.user_logout, name="user-logout"),
     path('hydration-tracker', views.hydration_tracker, name="hydration-tracker"),  # New path for Hydration Tracker
     path('sleep-tracker', views.sleep_tracker, name="sleep-tracker"),
-    path('chatbot/', views.chatbot, name='chatbot'), # New path for Sleep Tracker
+    path('chatbot', views.chatbot, name="chatbot"), # New path for Sleep Tracker
 ]
