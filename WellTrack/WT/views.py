@@ -11,10 +11,37 @@ from transformers import pipeline
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Appointment
 from WT.models import Appointment
+import google.generativeai as genai
+from django.contrib.auth import authenticate, login, logout
 
+genai.configure(api_key="AIzaSyAxKriskOxxJ4L9O4qKwmGxHDPiIlaP5X8")
 
-# Set up the pipeline for text generation (using DistilGPT-2)
-pipe = pipeline("text-generation", model="distilgpt2")
+# Define generation configuration (defined once, outside of the request handler)
+generation_config = {
+    "temperature": 0,
+    "top_p": 0.95,
+    "top_k": 40,
+    "max_output_tokens": 8192,
+    "response_mime_type": "text/plain",
+}
+
+# Create a model with the system instruction (also defined once)
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash",
+    generation_config=generation_config,
+    system_instruction=(
+        "You are a virtual healthcare assistant designed to provide empathetic, "
+        "evidence-based guidance on general health concerns and wellness tips. "
+        "Maintain a warm, supportive, and professional tone, avoiding medical jargon "
+        "unless necessary. Offer concise, user-friendly suggestions while emphasizing "
+        "that users consult healthcare providers for serious or specific issues. Avoid "
+        "diagnosing or prescribing treatments; instead, guide users with general advice "
+        "and encourage follow-ups (e.g., 'Let me know if there's anything else I can help with.'). "
+        "In emergencies (e.g., 'I have chest pain.'), immediately advise contacting emergency services. "
+        "Prioritize safety, clarity, and support in every response."
+    ),
+)
+
 
 # Home page view
 def homepage(request):
@@ -54,24 +81,39 @@ def user_logout(request):
 # Chatbot view
 @login_required(login_url="my-login")
 def chatbot(request):
-    chat_history = request.session.get("chat_history", [])
-    if request.method == "POST":
+    if request.method == 'POST':
+        # Parse incoming JSON data
         try:
             data = json.loads(request.body)
-            user_message = data.get("user_message")
-            if not user_message:
-                return JsonResponse({"error": "No user message provided"}, status=400)
-            chat_history.append({"user": True, "text": user_message})
-            bot_response = pipe(user_message, max_length=100)[0]['generated_text'].strip()
-            chat_history.append({"user": False, "text": bot_response})
-            if len(chat_history) > 20:
-                chat_history = chat_history[-20:]
-            request.session["chat_history"] = chat_history
-            return JsonResponse({"message": bot_response})
+            user_input = data.get('user_input', '')
         except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON format"}, status=400)
-    request.session["chat_history"] = []
-    return render(request, "WT/chatbot.html", {"chat_history": []})
+            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+
+        if not user_input:
+            return JsonResponse({'error': 'No user input provided'}, status=400)
+
+        # Initialize the chatbot session
+        chat_session = model.start_chat(history=[])
+
+        try:
+            # Send the user's message and get the response from the model
+            response = chat_session.send_message(user_input)
+
+            if response and hasattr(response, 'text'):
+                bot_response = response.text.strip()
+            else:
+                bot_response = "Sorry, I couldn't get a valid response from the system."
+        except Exception as e:
+            bot_response = f"An error occurred: {str(e)}"
+
+        # Log the response for debugging purposes
+        print(f"Bot response: {bot_response}")
+
+        # Return the bot's response as JSON
+        return JsonResponse({'bot_response': bot_response})
+
+    # If the request is not a POST, render the chatbot template
+    return render(request, 'WT/chatbot.html')
 
 # Dashboard view (requires login)
 @login_required(login_url="my-login")
