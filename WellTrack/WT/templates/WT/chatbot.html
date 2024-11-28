@@ -3,145 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Health Chatbot</title>
+    <title>Healthcare Chatbot</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #80ced6;
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position: center;
+            font-family: 'Arial', sans-serif;
             margin: 0;
-        }
-        .container {
-            text-align: center;
-            padding: 2rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 400px;
-        }
-        h1 {
-            font-size: 1.5rem;
+            padding: 0;
+            background: linear-gradient(to bottom right, #a1c4fd, #c2e9fb);
             color: #333;
-            margin-bottom: 1rem;
         }
-        #chatbox {
-            background-color: #f1f1f1;
-            border-radius: 8px;
-            padding: 1rem;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
+
+        header {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+            background: linear-gradient(to bottom right, #ffffff, #f7f7f7);
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        #chat-history {
+            padding: 20px;
             max-height: 400px;
             overflow-y: auto;
-            margin-bottom: 1rem;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
-        .message {
+
+        #chat-history p {
+            margin: 5px 0;
             padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            width: fit-content;
-            max-width: 80%;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        .user-message {
-            background-color: #e1f5fe;
-            text-align: right;
-            align-self: flex-end;
-            color: #333;
+
+        #chat-history p strong {
+            color: #2575fc;
         }
-        .bot-message {
-            background-color: #c8e6c9;
-            text-align: left;
-            align-self: flex-start;
-            color: #333;
+
+        #chat-history p:nth-child(even) {
+            background: #e3e8ff;
         }
-        #messages {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+
+        #chat-history p:nth-child(odd) {
+            background: #f1f8ff;
         }
-        #input-box {
+
+        #chat-form {
             display: flex;
             gap: 10px;
-            margin-top: 1rem;
+            align-items: center;
         }
-        #user_message {
+
+        #user-input {
             flex: 1;
             padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            background-color: #f1f1f1;
-        }
-        button {
-            padding: 10px 20px;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
             border: none;
+            border-radius: 25px;
+            background: linear-gradient(to right, #e3e8ff, #ffffff);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            font-size: 1rem;
             cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #2575fc, #6a11cb);
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #2575fc;
+            color: white;
+            margin-top: 20px;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1>Healthcare Chatbot</h1>
+    </header>
+
     <div class="container">
-        <h1>Ask Your Health Question</h1>
-
-        <!-- Chatbox displaying conversation -->
-        <div id="chatbox">
-            <div id="messages">
-                {% for message in chat_history %}
-                    {% if message.user %}
-                        <div class="message user-message">{{ message.text }}</div>
-                    {% else %}
-                        <div class="message bot-message">{{ message.text }}</div>
-                    {% endif %}
-                {% endfor %}
-                {% if response_text %}
-                    <div class="message bot-message">{{ response_text }}</div>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Input form for user message -->
-        <div id="input-box">
-            <form method="POST" action="{% url 'chatbot' %}" id="chat-form" style="display: flex; width: 100%;">
-                {% csrf_token %}
-                <input type="text" id="user_message" name="user_message" placeholder="Type your question here..." required>
-                <button type="submit">Send</button>
-            </form>
-        </div>
+        <div id="chat-history"></div>
+        <form id="chat-form" method="POST">
+            <input type="text" name="user_input" id="user-input" placeholder="Ask a question..." required>
+            <button type="submit">Send</button>
+        </form>
     </div>
 
-    <!-- JavaScript for AJAX form submission without page reload -->
+    <footer>
+        Healthcare Chatbot © 2024 | Your Health, Our Priority
+    </footer>
+
     <script>
-        document.querySelector("form").addEventListener("submit", async function(event) {
+        const form = document.getElementById('chat-form');
+        const chatHistory = document.getElementById('chat-history');
+        const userInput = document.getElementById('user-input');
+
+        form.addEventListener('submit', async (event) => {
             event.preventDefault();
-            const userMessage = document.querySelector("input[name='user_message']").value;
+
+            const userMessage = userInput.value;
+            chatHistory.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
+            userInput.value = '';
 
             const response = await fetch("{% url 'chatbot' %}", {
-                method: "POST",
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}"
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
                 },
-                body: JSON.stringify({ "user_message": userMessage })
+                body: JSON.stringify({ user_input: userMessage }),
             });
 
             const data = await response.json();
-            if (data.message) {
-                // Display bot response in chat UI
-                const botResponse = document.createElement("div");
-                botResponse.className = "message bot-message";
-                botResponse.textContent = data.message;
-                document.getElementById("messages").appendChild(botResponse);
-            } else if (data.error) {
-                console.error("Error:", data.error);
-            }
+            chatHistory.innerHTML += `<p><strong>Bot:</strong> ${data.bot_response}</p>`;
         });
     </script>
 </body>
