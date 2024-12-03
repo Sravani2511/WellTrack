@@ -76,15 +76,7 @@ Acceptance criteria:
 -	Notifications to remind the user of the upcoming appointments
 -	Can view and export appointment history
 
-3.	Steps counter
-As a fitness enthusiast, I want to track my daily steps so I can meet my fitness goals.
-Estimation of efforts: L
-Acceptance Criteria: 
--	The users can input daily step counts manually or sync from a wearable device 
--	Shows progress towards daily steps goal
--	Can view weekly and monthly summary of the steps count
-
-4.	Sleep tracker
+3.	Sleep tracker
 As a caregiver, I want to monitor my patient’s sleep patterns  so I can ensure they get enough sleep.
 Estimation of efforts: L
 Acceptance Criteria:
@@ -92,9 +84,7 @@ Acceptance Criteria:
 -	Send notifications when it's time to sleep according to the sleep schedule
 -	Can view sleep history and trends
 
-
-
-5.	Calories Intake
+4.	Calories Intake
 As a fitness enthusiast, I want to track my calorie intake so I get to stay on track with the diet plan.
 Estimation of efforts: L
 Acceptance Criteria:
@@ -102,7 +92,7 @@ Acceptance Criteria:
 -	Send notification when the user is near to or exceeding their daily calorie limit
 -	Can view weekly summary of calorie intake and track their daily goal
 
-6.	Chatbot
+5.	Chatbot
 As an app user, I want to interact with chatbot so I can get quick answers to health-related queries.
 Estimation of efforts: L
 Acceptance Criteria:
