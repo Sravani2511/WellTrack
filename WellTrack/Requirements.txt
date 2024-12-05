@@ -1,0 +1,12 @@
+Django>=4.2,<5.0            # Django framework
+djangorestframework>=3.14   # For API handling (if needed for JSON responses)
+django-crispy-forms>=1.14   # For form handling and styling (if used in templates)
+psycopg2>=2.9               # PostgreSQL database adapter (use if PostgreSQL is your database)
+mysqlclient>=2.2            # MySQL database adapter (use if MySQL is your database)
+sqlite3                     # SQLite (default database for Django, no installation required)
+google-generativeai>=0.1    # For Google Generative AI API integration
+transformers>=4.34          # Hugging Face Transformers library for model usage
+Pillow>=10.0                # For handling image uploads (if applicable)
+python-decouple>=3.8        # For secure configuration via environment variables
+pytest>=7.4                 # For testing
+pytest-django>=4.5          # Django testing plugin for pytest
