@@ -1,36 +1,10 @@
-# Django framework (ensuring Python 3.8+ compatibility)
-Django>=4.2,<5.0; python_version >= "3.8"
-Django>=3.2,<4.0; python_version < "3.8"
-
-# For API handling (if needed for JSON responses)
-djangorestframework>=3.14
-
-# For form handling and styling (if used in templates)
-django-crispy-forms>=1.14
-
-# Database adapters (uncomment the one applicable to your project)
-psycopg2>=2.9               # PostgreSQL database adapter
-# mysqlclient>=2.2          # MySQL database adapter
-# SQLite (default database for Django, no installation required)
-
-# For Google Generative AI API integration
-google-generativeai>=0.1
-
-# Hugging Face Transformers library for model usage
-transformers>=4.34
-
-# For handling image uploads
-Pillow>=10.0
-
-# For secure configuration via environment variables
-python-decouple>=3.8
-
-# For testing
-pytest>=7.4
+python_version >= 3.8
+Django>=4.2,<5.0            # Django framework
+djangorestframework>=3.14   # For API handling (if needed for JSON responses)
+django-crispy-forms>=1.14   # For form handling and styling (if used in templates)
+sqlite3                     # SQLite (default database for Django, no installation required)
+google-generativeai>=0.1    # For Google Generative AI API integration
+transformers>=4.34          # Hugging Face Transformers library for model usage
+python-decouple>=3.8        # For secure configuration via environment variables
+pytest>=7.4                 # For testing
 pytest-django>=4.5          # Django testing plugin for pytest
-
-# For debugging (optional, for development)
-django-debug-toolbar>=4.0
-
-# For production WSGI server (optional)
-gunicorn>=21.0
